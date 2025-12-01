@@ -1,0 +1,31 @@
+version: 0.2
+
+env:
+  shell: bash
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - set -euo pipefail
+      - apt-get update -qq
+      - DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg
+      - rm -rf /var/lib/apt/lists/*
+      - python -m pip install --disable-pip-version-check --upgrade pip
+      - python -m pip install --disable-pip-version-check . markdown-to-confluence
+      - curl --fail --silent --show-error --location "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output /tmp/awscliv2.zip
+      - unzip -q /tmp/awscliv2.zip -d /tmp/awscliv2
+      - /tmp/awscliv2/aws/install --install-dir /opt/mi/aws-cli --bin-dir /opt/mi/bin
+  pre_build:
+    commands:
+      - set -euo pipefail
+      - /opt/mi/bin/aws --version
+      - ffmpeg -version | sed -n '1p'
+      - md2conf --help >/dev/null
+      - df -h "$CODEBUILD_SRC_DIR"
+      - python --version
+  build:
+    commands:
+      - set -euo pipefail
+      - PATH="/opt/mi/bin:${PATH}" AWS_CLI=/opt/mi/bin/aws python -m meeting_intelligence.cli analysis-finalize

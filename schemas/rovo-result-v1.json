@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meeting-intelligence.local/schemas/rovo-result-v1.json",
+  "title": "Meeting Intelligence Rovo result",
+  "type": "object",
+  "required": ["schemaVersion", "summary", "demos"],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisions": {
+      "type": "array"
+    },
+    "actionItems": {
+      "type": "array"
+    },
+    "risks": {
+      "type": "array"
+    },
+    "demos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sourceRecordingId", "startSeconds", "endSeconds", "title"],
+        "properties": {
+          "sourceRecordingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "startSeconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "endSeconds": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

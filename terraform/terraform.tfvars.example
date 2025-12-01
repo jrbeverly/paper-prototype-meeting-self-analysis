@@ -1,0 +1,78 @@
+aws_region  = "ca-central-1"
+environment = "dev"
+
+# Build this ZIP before `terraform plan`; see README.md. Terraform uploads it
+# to the versioned bucket and pins every CodeBuild project to that object version.
+source_bundle_path = "../dist/meeting-intelligence-source.zip"
+
+zoom_users         = ["me"]
+zoom_lookback_days = 1
+
+# Leave null to create empty Secrets Manager shells. Supply existing ARNs to
+# reuse secrets. Never put secret JSON or credentials in a tfvars file.
+zoom_secret_arn       = null
+jira_secret_arn       = null
+confluence_secret_arn = null
+graph_secret_arn      = null
+
+# Keep schedules disabled for the first apply, populate secret shells, run each
+# project once manually, then change this to true and apply again.
+schedules_enabled = false
+
+alarm_email_endpoints = [
+  "meeting-intelligence-alerts@example.com",
+]
+
+# Terraform injects the actual artifactBucket and activePrefix fields into the
+# SSM JSON document. This value must contain only non-secret configuration.
+config_json = <<-JSON
+{
+  "businessTimeZone": "America/Toronto",
+  "transcription": {
+    "configurationId": "en-us-default-v1",
+    "languageCode": "en-US",
+    "maxItemsPerRun": 100,
+    "retryFailed": false
+  },
+  "jira": {
+    "snapshotIntervalMinutes": 30,
+    "teams": [
+      {
+        "teamId": "payments",
+        "projectKey": "PAY",
+        "boardId": "123",
+        "storyPointsField": "customfield_10016"
+      }
+    ]
+  },
+  "confluence": {
+    "baseUrl": "https://example.atlassian.net/wiki",
+    "spaceKey": "MI",
+    "inputParentId": "111111",
+    "resultParentId": "222222",
+    "finalParentId": "333333",
+    "md2confCommand": "md2conf"
+  },
+  "inboundSharePointProfiles": {
+    "payments": {
+      "prefixes": [
+        "sharepoint/payments/"
+      ]
+    }
+  },
+  "analysisProfiles": {},
+  "aggregationProfiles": [],
+  "finalization": {
+    "maxDemos": 20,
+    "simpleUploadLimitBytes": 250000000,
+    "uploadChunkBytes": 10485760,
+    "ffmpegCommand": "ffmpeg",
+    "ffprobeCommand": "ffprobe",
+    "sharePoint": {
+      "siteId": "contoso.sharepoint.com,site-collection-id,site-id",
+      "driveId": "document-library-drive-id",
+      "folder": "Meeting Intelligence"
+    }
+  }
+}
+JSON

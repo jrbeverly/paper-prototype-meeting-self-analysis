@@ -1,0 +1,52 @@
+version: 0.2
+
+env:
+  shell: bash
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - set -euo pipefail
+      - python -m pip install --disable-pip-version-check --upgrade pip
+      - python -m pip install --disable-pip-version-check .
+      - curl --fail --silent --show-error --location "https://acli.atlassian.com/linux/latest/acli_linux_amd64/acli" --output /tmp/acli
+      - install -m 0755 /tmp/acli /usr/local/bin/acli
+  pre_build:
+    commands:
+      - set -euo pipefail
+      - acli --version
+      - python --version
+      - |
+        python - <<'PY'
+        import json
+        import os
+        import subprocess
+        from urllib.parse import urlsplit
+
+        secret = json.loads(os.environ["MI_JIRA_SECRET_JSON"])
+        site_value = str(secret["site"]).strip()
+        parsed = urlsplit(site_value if "://" in site_value else f"//{site_value}")
+        site = parsed.netloc or parsed.path
+        subprocess.run(
+            [
+                "acli",
+                "jira",
+                "auth",
+                "login",
+                "--site",
+                site.rstrip("/"),
+                "--email",
+                str(secret["email"]),
+                "--token",
+            ],
+            input=str(secret["apiToken"]) + "\n",
+            text=True,
+            check=True,
+        )
+        PY
+  build:
+    commands:
+      - set -euo pipefail
+      - python -m meeting_intelligence.cli jira-snapshot

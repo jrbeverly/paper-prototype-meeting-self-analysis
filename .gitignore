@@ -1,0 +1,82 @@
+# ── .NET ────────────────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+*.DotSettings.user
+packages/
+
+# ── Node.js ─────────────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-e2e/
+public/
+.hugo_build.lock
+*.tsbuildinfo
+
+# ── Environment ─────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.example.env
+
+# ── Terraform ───────────────────────────────────────────────────────────
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.example.tfvars
+!*.tfvars.example
+.archives/
+
+# ── IDE ─────────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/*.code-snippets
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ── AI ──────────────────────────────────────────────────────────────────
+.codex
+.claude
+
+# ── AWS ─────────────────────────────────────────────────────────────────
+credentials
+*.pem
+aws-exports.js
+
+# ── Tooling ─────────────────────────────────────────────────────────────
+.artifacts/
+.cache/
+.ci/
+.claude/plans/
+coverage/
+*.lcov
+TestResults/
+.pytest_cache/
+__pycache__/
+.venv/
+*.egg-info/
+docs/generated/
+issues/
+privacy.patterneddesigns.ca/
+
+# ── Explicit Allownaces ─────────────────────────────────────────────────────────────
+!tools/bin
+
+# ── Load tests ───────────────────────────────────────────────────────────
+# Raw k6 per-request JSON output files are excluded — they can be multiple GBs.
+# Compact run summaries (latest-*.json, history.json, data.js) ARE committed.
+tests/LoadTests/results/*-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*.json
+dotnet/

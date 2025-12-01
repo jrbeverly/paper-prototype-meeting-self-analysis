@@ -1,0 +1,78 @@
+{
+  "artifactBucket": "meeting-intelligence-dev-artifacts",
+  "activePrefix": "meetings/",
+  "businessTimeZone": "America/Toronto",
+  "transcription": {
+    "configurationId": "en-us-default-v1",
+    "languageCode": "en-US",
+    "maxItemsPerRun": 100,
+    "retryFailed": false
+  },
+  "jira": {
+    "acliCommand": "acli",
+    "snapshotIntervalMinutes": 30,
+    "required": true,
+    "teams": [
+      {
+        "teamId": "payments",
+        "projectKey": "PAY",
+        "boardId": "42",
+        "storyPointsField": "customfield_10016",
+        "jqlPerspectives": [
+          {
+            "name": "recently-updated",
+            "jql": "project = ${project} AND updated >= -7d ORDER BY updated DESC"
+          }
+        ]
+      }
+    ]
+  },
+  "inboundSharePointProfiles": {
+    "payments-reference": {
+      "prefixes": [
+        "sharepoint/payments-reference/"
+      ],
+      "maxDocuments": 20,
+      "maxBytesPerDocument": 200000,
+      "maxAgeHours": 168,
+      "required": false
+    }
+  },
+  "analysisProfiles": {
+    "default": {
+      "instructions": "Summarize the meeting and identify grounded decisions, actions, risks, and useful demonstrations."
+    },
+    "daily-brief-team-input": {
+      "instructions": "Combine team progress, blockers, coordination needs, decisions, and explicitly assigned actions into the configured Daily Brief."
+    }
+  },
+  "aggregationProfiles": [
+    {
+      "id": "daily-brief",
+      "expectedTeams": [
+        "payments"
+      ],
+      "deadlineLocal": "14:00"
+    }
+  ],
+  "confluence": {
+    "baseUrl": "https://example.atlassian.net/wiki",
+    "spaceKey": "MI",
+    "inputParentId": "111111",
+    "resultParentId": "222222",
+    "finalParentId": "333333",
+    "md2confCommand": "md2conf"
+  },
+  "finalization": {
+    "sharePoint": {
+      "siteId": "tenant.sharepoint.com,site-guid,web-guid",
+      "driveId": "document-library-drive-id",
+      "folder": "Meeting Intelligence"
+    },
+    "maxDemos": 20,
+    "simpleUploadLimitBytes": 250000000,
+    "uploadChunkBytes": 10485760,
+    "ffmpegCommand": "ffmpeg",
+    "ffprobeCommand": "ffprobe"
+  }
+}

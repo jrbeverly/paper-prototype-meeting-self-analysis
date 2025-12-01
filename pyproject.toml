@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "meeting-intelligence"
+version = "1.0.0"
+description = "Cron-driven meeting intelligence reconcilers"
+requires-python = ">=3.11"
+dependencies = [
+  "boto3>=1.43.0",
+  "requests>=2.31.0",
+]
+
+[project.scripts]
+meeting-intelligence = "meeting_intelligence.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["meeting_intelligence*"]
+
